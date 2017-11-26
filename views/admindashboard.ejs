@@ -1,0 +1,102 @@
+<title>Admin Dashboard | Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+<script src="/js/adminControl.js"></script>
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+
+<div class="container main-hero admin-login" ng-show="showDetails && !paymentInfo">
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="hero-card">
+				<form action="/search" method="post">
+					<div class="form-group">
+						<h3>Print Journey Details</h3>
+						<hr>
+						<label for="from">From</label>
+						<select id="from" name="from">
+							<option value="Elumalai">Elumalai</option>
+							<option value="Koyambedu">Koyambedu</option>
+						</select>
+
+					</div>
+					<div class="form-group">
+						<label for="to">To</label>
+						<select id="to" name="to">
+							<option value="Elumalai">Elumalai</option>
+							<option value="Koyambedu">Koyambedu</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="date">Date of Journey(dd/mm/yyyy)</label>
+						<input type="date" name="date" required="true" id="date">
+					</div>
+					<button class="book-button" type="submit">Search</button>
+				</form>
+				<hr>
+				<div class="form-group">
+					<h3>Change Ticket Fare</h3>
+					<hr>
+					<label for="changeFareDate">Date of Journey(dd/mm/yyyy)</label>
+					<input  type="date" name="changeFareDate" required="true" id="changeFareDate">
+				</div>
+				<div class="form-group">
+					<label for="source">From</label>
+					<select id="source" name="source">
+						<option value="Elumalai">Elumalai</option>
+						<option value="Koyambedu">Koyambedu</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="destination">to</label>
+					<select id="destination" name="destination">
+						<option value="Elumalai">Elumalai</option>
+						<option value="Koyambedu">Koyambedu</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="toPrice">Price</label>
+					<input type="number" name="toPrice" required="true" id="toPrice">
+				</div>
+
+				<button class="book-button" id="modify-fare">Search</button>
+				<hr>
+				<div class="form-group">
+					<h3>Add Bus</h3>
+
+					<hr>
+					<div class="form-group">
+						<label for="addSource">From</label>
+						<select id="addSource" name="addSource">
+							<option value="Elumalai">Elumalai</option>
+							<option value="koyambedu">koyambedu</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="addDestination">to</label>
+						<select id="addDestination" name="addDestination">
+							<option value="Elumalai">Elumalai</option>
+							<option value="koyambedu">koyambedu</option>
+						</select>
+					</div>
+					<label for="addDate">Date of Journey(dd/mm/yyyy)</label>
+					<input  type="date" name="addDate" required="true" id="addDate">
+				</div>
+
+				<div class="form-group">
+					<label for="addPrice">Price</label>
+					<input type="number" name="addPrice" required="true" id="addPrice">
+				</div>
+
+				<button class="book-button" id="add-bus">Add Bus</button>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>

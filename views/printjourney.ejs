@@ -1,0 +1,96 @@
+
+<title>Print Journey - Admin Dashboard  - Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+
+
+
+<div class="container final-book" >
+    <input type="button" class="print-button" value="Print Ticket" onClick="window.print()">
+
+    <!--<h1>Your booking is Successful!</h1>-->
+
+    <div class="card booking-card">
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <p>Boarding Point: <b><%=sourceFrom%></b></p>
+                    <p>Destination Point: <b><%=destinationTo%></b></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <p>2 + 2 Seater Non A.C</p>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <p>Departure: <b><%=departure%></b></p>
+                    <p>Arrival: <b><%=arrival%></b></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <p>Total Fare: <b>&#x20b9; <%=totalPrice%></b></p>
+                </div>
+
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Passenger Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Seat Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% details.forEach(function(docs,i) { %>
+
+            <tr>
+                <td><%= i+1 %></td>
+                <td><%= docs.ticket[0].passengerName %></td>
+                <td><%= docs.ticket[0].passengerAge %></td>
+                <td><%= docs.ticket[0].passengerGender%></td>
+                <td><%= docs.ticket[0].seatNumber %></td>
+            </tr>
+            <% }); %>
+
+            </tbody>
+        </table>
+        <div class="card booking-card card-foot-exposed">
+            <p>PNR Number: <b><%=pnr%></b></p>
+
+            <p>Contact Number: <b>9943122230/235</b></p>
+        </div>
+        <div class="card booking-card card-foot-exposed">
+            <p>Date of journey: <b><%=doj%></b></p>
+
+            <p>Thank you for Booking with us!</p>
+        </div>
+        <hr>
+        <div class="row foot-notes">
+            <div class="col-md-12">
+                <p>Important:</p>
+                <ol>
+                    <li>The seat(s) booked under this ticket is/are not transferable.</li>
+                    <li>This e-ticket is valid only for the seat number and bus service specified herein.</li>
+                    <li>This e-ticket has to be carried by the passenger during the journey along with an ID Card of the
+                        passenger whose name appears above.
+                    </li>
+                    <li>Please keep the ticket safely till the end of the journey.</li>
+                    <li>Please show the ticket at the time of checking.</li>
+                    <li>Lakshana reserves the rights to change/cancel the class of service.</li>
+                    <li>Time is in 24 hour Railways time format(24HH:MM).</li>
+                </ol>
+            </div>
+        </div>
+        <div class="padink-credits">Technology driven with ♥ by <a href="http://padink.in">Padink Engineering Consortium</a></div>
+
+    </div>
+</div>
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>

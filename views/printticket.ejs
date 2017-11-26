@@ -1,0 +1,40 @@
+<title>Admin Dashboard - Print Ticket - Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+
+
+
+
+<div class="container coming-soon agent-reg">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h1>Print your journey ticket</h1>
+            <form action="/printticket" method="post">
+                <div>
+                    <label for="pnr">PNR Number</label>
+                    <input required type="text" value="<%= pnr%>" id="pnr" name="pnr" required>
+                </div>
+                <div>
+                    <h6 style="color: red">Enter the email id which you provided while booking the tickets</h6>
+                    <label for="email">E-mail</label>
+                    <input required type="text" name="email" id="email"/>
+                </div>
+                <button class="book-button mt0" type="submit" id="ticket-print">Submit</button>
+                <p style="color: red"><%= print_msg%></p>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>

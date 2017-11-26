@@ -1,0 +1,54 @@
+<title>Payment Status | Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+
+<div class="container coming-soon payment-done">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="tick-animation-ctn">
+                <div class="icon icon--order-success svg">
+                    <%if (status!='Failed') { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="100px">
+                        <g fill="none" stroke="#00BC9E" stroke-width="2">
+                            <circle cx="50" cy="50" r="48" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                            <circle id="colored" fill="#00BC9E" cx="50" cy="50" r="48" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+                            <polyline class="st0" stroke="#fff" stroke-width="8" points="22,48 42,68 76,32" style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>
+                        </g>
+                    </svg>
+                    <%}%>
+                    <%if (status=='Failed') { %>
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                        <path class="checkmark__check" fill="none" d="M16 16 36 36 M36 16 16 36" />
+                    </svg>
+                    <%}%>
+
+
+                </div>
+            </div>
+            <h2>Payment Status: <span><%= status %></span></h2>
+            <h3>PNR Number : <%= pnr %></h3>
+            <form action="/printticket" method="post">
+                <input type="hidden" name="pnr" id="pnr" value="<%=pnr%>">
+                <input type="hidden" name="email" id="email" value="<%=email%>">
+                <%if (status!='Failed') { %>
+
+
+                <button type="submit"> Continue to Ticket Printing &rarr;</button>
+                <%}%>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>
+
+

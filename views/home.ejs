@@ -1,0 +1,1140 @@
+
+<% include partials/head.ejs %>
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+<script src="/js/angularsweetalert.js"></script>
+<link rel="stylesheet" href="/css/main.css">
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+
+<div class="container main-hero" ng-show="showDetails && !paymentInfo">
+    <div class="row">
+        <div class="col-md-7 col-sm-12">
+            <h1>Plan your perfect trip more effectively with us!</h1>
+
+            <p class="lead">Easily find bus with wide variety of travel options and more!</p>
+        </div>
+        <div class="col-md-5 col-sm-12">
+            <div class="hero-card">
+                <form novalidate name="bookDetails">
+                    <input type="hidden" name="csrf" value="_csrf">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="from">Boarding from</label>
+                                <md-select ng-model="sourceFrom" placeholder="Select your Journey source" name="source"
+                                           ng-required=true>
+                                    <md-option ng-repeat="x in sourceArray |filter: '!'+destinationTo | orderBy"
+                                               value="{{x}}">
+                                        {{x}}
+                                    </md-option>
+                                </md-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="to">To Destination</label>
+                                <md-select ng-model="destinationTo" placeholder="Select your Journey destintion"
+                                           name="to" ng-required=true>
+                                    <md-option ng-repeat="y in destinationArray|filter: '!'+sourceFrom | orderBy "
+                                               value="{{y}}">
+                                        {{y}}
+                                    </md-option>
+                                </md-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="date">Travel Date is</label>
+                                <md-datepicker md-open-on-focus ng-model="journeyDate" md-placeholder="Enter date"
+                                               ng-required="true" name="date" md-min-date="Mindate"
+                                               md-max-date="Maxdate" ng-required=true></md-datepicker>
+                                <span style="color: red"
+                                      ng-show="bookDetails.date.$invalid && bookDetails.date.$touched">Enter your journey date</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="quantity">Total travellers is</label>
+                                <md-select ng-model="maxSeats" placeholder="Select a Value" name="quantity"
+                                           ng-pattern="/^\d+$/" ng-required=true>
+                                    <md-option ng-repeat="x in noOfSeats" value="{{x}}">
+                                        {{x}}
+                                    </md-option>
+                                </md-select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="book-button" ng-click="showSeat()" ng-disabled="bookDetails.$invalid">Book
+                        Now &rarr;</button>
+                    <p class="no-buses" ng-show="noBusFound">No bus found!</p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr class="main-hero-line">
+    <div class="row feature-full-wrapper">
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/world.svg" alt="">
+
+                <h3>Prices you can beat!</h3>
+
+                <p>Our travels has the lowest price for bus tickets compared to everyone else.</p>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/prices.svg" alt="">
+
+                <h3>Pay less to travel with us</h3>
+
+                <p>No booking fees. Be sure to get the best prices without any hidden or booking fees. You Pay only for
+                    your travels.</p>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/collection.svg" alt="">
+
+                <h3>Only the Best Buses</h3>
+
+                <p>From Design to Accomadation we have the best in class buses there is. Experience the best.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row feature-full-wrapper">
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/easy.svg" alt="">
+
+                <h3>Easy Booking Interface</h3>
+
+                <p>Our amazing user interface provides you with an easy to use interface for seamless booking
+                    experience.</p>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/loved.svg" alt="">
+
+                <h3>Loved by Thousands</h3>
+
+                <p>We have a great track record of giving the best treatment to all our customers.</p>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="feature-wrapper">
+                <img src="/images/features/customer.svg" alt="">
+
+                <h3>We're here to help 24/7</h3>
+
+                <p>Our Team would help you if you have any doubt on booking process or at any other place.</p>
+            </div>
+        </div>
+    </div>
+    <hr class="main-hero-line">
+    <div class="row stop-start">
+        <div class="col-md-12">
+            <h2>Stop Thinking. Start Travelling</h2>
+            <img src="/images/bg.jpg" alt="bg">
+        </div>
+    </div>
+</div>
+
+<form novalidate name="passengerDetails">
+    <div>
+        <div class="container" ng-hide="(showDetails && !paymentInfo) ||seatHide">
+            <div class="card booking-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <p>{{sourceFrom}} - {{destinationTo}}</p>
+                            <input type="hidden" value="{{sourceFrom}}" id="sourceFrom">
+                            <input type="hidden" value="{{destinationTo}}" id="destinationTo">
+
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <p>2 + 2 Seater Non A.C</p>
+                        </div>
+                        <!--<div class="col-md-3 col-sm-6">-->
+                        <!--<p>Departure: <b>09:00 AM</b></p>-->
+                        <!--<p>Arrival: <b>09:00 AM</b></p>-->
+                        <!--</div>-->
+                        <div class="col-md-3 col-sm-6">
+                            <p>Fare: <b>&#x20b9; {{ticketPrice}}</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel panel-default ticket-panel ticket-details">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Select your seat</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="containerbus">
+                                <div class="autobus">
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento" style="border:0px">
+                                                <img src="/images/driver.svg" alt="">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[0].reserved "
+                                                       ng-disabled="seatLayout[0].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento1" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[0].reserved == false && disable[0].value == true , 'notselected' : seatLayout[0].reserved == true && seatLayout[0].passengerGender!='Female','female' : seatLayout[0].reserved == true && seatLayout[0].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[0].value == false && seatLayout[0].reserved == false  }"
+                                                       ng-click="checkDisabled(seatLayout[0].reserved,result.length,maxSeats,seatLayout[0])"
+                                                       for="asiento1">{{seatLayout[0].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[1].reserved"
+                                                       ng-disabled="seatLayout[1].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento2" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[1].reserved == false && disable[1].value == true , 'notselected' : seatLayout[1].reserved == true && seatLayout[1].passengerGender!='Female','female' : seatLayout[1].reserved == true && seatLayout[1].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[1].value == false && seatLayout[1].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[1].reserved,result.length,maxSeats,seatLayout[1])"
+                                                       for="asiento2">{{seatLayout[1].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[2].reserved"
+                                                       ng-disabled="seatLayout[2].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento3" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[2].reserved == false && disable[2].value == true , 'notselected' : seatLayout[2].reserved == true && seatLayout[2].passengerGender!='Female','female' : seatLayout[2].reserved == true && seatLayout[2].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[2].value == false && seatLayout[2].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[2].reserved,result.length,maxSeats,seatLayout[2])"
+                                                       for="asiento3">{{seatLayout[2].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[3].reserved"
+                                                       ng-disabled="seatLayout[3].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento4" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[3].reserved == false && disable[3].value == true , 'notselected' : seatLayout[3].reserved == true && seatLayout[3].passengerGender!='Female','female' : seatLayout[3].reserved == true && seatLayout[3].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[3].value == false && seatLayout[3].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[3].reserved,result.length,maxSeats,seatLayout[3])"
+                                                       for="asiento4">{{seatLayout[3].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[4].reserved"
+                                                       ng-disabled="seatLayout[4].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento5" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[4].reserved == false && disable[4].value == true , 'notselected' : seatLayout[4].reserved == true && seatLayout[4].passengerGender!='Female','female' : seatLayout[4].reserved == true && seatLayout[4].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[4].value == false && seatLayout[4].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[4].reserved,result.length,maxSeats,seatLayout[4])"
+                                                       for="asiento5">{{seatLayout[4].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[5].reserved"
+                                                       ng-disabled="seatLayout[5].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento6" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[5].reserved == false && disable[5].value == true , 'notselected' : seatLayout[5].reserved == true && seatLayout[5].passengerGender!='Female','female' : seatLayout[5].reserved == true && seatLayout[5].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[5].value == false && seatLayout[5].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[5].reserved,result.length,maxSeats,seatLayout[5])"
+                                                       for="asiento6">{{seatLayout[5].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[6].reserved"
+                                                       ng-disabled="seatLayout[6].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento7" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[6].reserved == false && disable[6].value == true , 'notselected' : seatLayout[6].reserved == true && seatLayout[6].passengerGender!='Female','female' : seatLayout[6].reserved == true && seatLayout[6].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[6].value == false && seatLayout[6].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[6].reserved,result.length,maxSeats,seatLayout[6])"
+                                                       for="asiento7">{{seatLayout[6].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[7].reserved"
+                                                       ng-disabled="seatLayout[7].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento8" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[7].reserved == false && disable[7].value == true , 'notselected' : seatLayout[7].reserved == true && seatLayout[7].passengerGender!='Female','female' : seatLayout[7].reserved == true && seatLayout[7].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[7].value == false && seatLayout[7].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[7].reserved,result.length,maxSeats,seatLayout[7])"
+                                                       for="asiento8">{{seatLayout[7].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[8].reserved"
+                                                       ng-disabled="seatLayout[8].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento9" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[8].reserved == false && disable[8].value == true , 'notselected' : seatLayout[8].reserved == true && seatLayout[8].passengerGender!='Female','female' : seatLayout[8].reserved == true && seatLayout[8].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[8].value == false && seatLayout[8].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[8].reserved,result.length,maxSeats,seatLayout[8])"
+                                                       for="asiento9">{{seatLayout[8].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[9].reserved"
+                                                       ng-disabled="seatLayout[9].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None" id="asiento10" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[9].reserved == false && disable[9].value == true , 'notselected' : seatLayout[9].reserved == true && seatLayout[9].passengerGender!='Female','female' : seatLayout[9].reserved == true && seatLayout[9].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[9].value == false && seatLayout[9].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[9].reserved,result.length,maxSeats,seatLayout[9])"
+                                                       for="asiento10">{{seatLayout[9].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[10].reserved"
+                                                       ng-disabled="seatLayout[10].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento11" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[10].reserved == false && disable[10].value == true , 'notselected' : seatLayout[10].reserved == true && seatLayout[10].passengerGender!='Female','female' : seatLayout[10].reserved == true && seatLayout[10].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[10].value == false && seatLayout[10].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[10].reserved,result.length,maxSeats,seatLayout[10])"
+                                                       for="asiento11">{{seatLayout[10].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[11].reserved"
+                                                       ng-disabled="seatLayout[11].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento12" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[11].reserved == false && disable[11].value == true , 'notselected' : seatLayout[11].reserved == true && seatLayout[11].passengerGender!='Female','female' : seatLayout[11].reserved == true && seatLayout[11].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[11].value == false && seatLayout[11].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[11].reserved,result.length,maxSeats,seatLayout[11])"
+                                                       for="asiento12">{{seatLayout[11].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[12].reserved"
+                                                       ng-disabled="seatLayout[12].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento13" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[12].reserved == false && disable[12].value == true , 'notselected' : seatLayout[12].reserved == true && seatLayout[12].passengerGender!='Female','female' : seatLayout[12].reserved == true && seatLayout[12].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[12].value == false && seatLayout[12].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[12].reserved,result.length,maxSeats,seatLayout[12])"
+                                                       for="asiento13">{{seatLayout[12].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[13].reserved"
+                                                       ng-disabled="seatLayout[13].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento14" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[13].reserved == false && disable[13].value == true , 'notselected' : seatLayout[13].reserved == true && seatLayout[13].passengerGender!='Female','female' : seatLayout[13].reserved == true && seatLayout[13].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[13].value == false && seatLayout[13].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[13].reserved,result.length,maxSeats,seatLayout[13])"
+                                                       for="asiento14">{{seatLayout[13].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[14].reserved"
+                                                       ng-disabled="seatLayout[14].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento15" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[14].reserved == false && disable[14].value == true , 'notselected' : seatLayout[14].reserved == true && seatLayout[14].passengerGender!='Female','female' : seatLayout[14].reserved == true && seatLayout[14].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[14].value == false && seatLayout[14].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[14].reserved,result.length,maxSeats,seatLayout[14])"
+                                                       for="asiento15">{{seatLayout[14].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[15].reserved"
+                                                       ng-disabled="seatLayout[15].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento16" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[15].reserved == false && disable[15].value == true , 'notselected' : seatLayout[15].reserved == true && seatLayout[15].passengerGender!='Female','female' : seatLayout[15].reserved == true && seatLayout[15].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[15].value == false && seatLayout[15].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[15].reserved,result.length,maxSeats,seatLayout[15])"
+                                                       for="asiento16">{{seatLayout[15].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[16].reserved"
+                                                       ng-disabled="seatLayout[16].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento17" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[16].reserved == false && disable[16].value == true , 'notselected' : seatLayout[16].reserved == true && seatLayout[16].passengerGender!='Female','female' : seatLayout[16].reserved == true && seatLayout[16].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[16].value == false && seatLayout[16].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[16].reserved,result.length,maxSeats,seatLayout[16])"
+                                                       for="asiento17">{{seatLayout[16].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[17].reserved"
+                                                       ng-disabled="seatLayout[17].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento18" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[17].reserved == false && disable[17].value == true , 'notselected' : seatLayout[17].reserved == true && seatLayout[17].passengerGender!='Female','female' : seatLayout[17].reserved == true && seatLayout[17].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[17].value == false && seatLayout[17].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[17].reserved,result.length,maxSeats,seatLayout[17])"
+                                                       for="asiento18">{{seatLayout[17].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[18].reserved"
+                                                       ng-disabled="seatLayout[18].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento19" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[18].reserved == false && disable[18].value == true , 'notselected' : seatLayout[18].reserved == true && seatLayout[18].passengerGender!='Female','female' : seatLayout[18].reserved == true && seatLayout[18].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[18].value == false && seatLayout[18].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[18].reserved,result.length,maxSeats,seatLayout[18])"
+                                                       for="asiento19">{{seatLayout[18].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[19].reserved"
+                                                       ng-disabled="seatLayout[19].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento20" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[19].reserved == false && disable[19].value == true , 'notselected' : seatLayout[19].reserved == true && seatLayout[19].passengerGender!='Female','female' : seatLayout[19].reserved == true && seatLayout[19].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[19].value == false && seatLayout[19].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[19].reserved,result.length,maxSeats,seatLayout[19])"
+                                                       for="asiento20">{{seatLayout[19].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[20].reserved"
+                                                       ng-disabled="seatLayout[20].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento21" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[20].reserved == false && disable[20].value == true , 'notselected' : seatLayout[20].reserved == true && seatLayout[20].passengerGender!='Female','female' : seatLayout[20].reserved == true && seatLayout[20].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[20].value == false && seatLayout[20].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[20].reserved,result.length,maxSeats,seatLayout[20])"
+                                                       for="asiento21">{{seatLayout[20].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[21].reserved"
+                                                       ng-disabled="seatLayout[21].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento22" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[21].reserved == false && disable[21].value == true , 'notselected' : seatLayout[21].reserved == true && seatLayout[21].passengerGender!='Female','female' : seatLayout[21].reserved == true && seatLayout[21].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[21].value == false && seatLayout[21].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[21].reserved,result.length,maxSeats,seatLayout[21])"
+                                                       for="asiento22">{{seatLayout[21].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[22].reserved"
+                                                       ng-disabled="seatLayout[22].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento23" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[22].reserved == false && disable[22].value == true , 'notselected' : seatLayout[22].reserved == true && seatLayout[22].passengerGender!='Female','female' : seatLayout[22].reserved == true && seatLayout[22].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[22].value == false && seatLayout[22].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[22].reserved,result.length,maxSeats,seatLayout[22])"
+                                                       for="asiento23">{{seatLayout[22].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[23].reserved"
+                                                       ng-disabled="seatLayout[23].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento24" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[23].reserved == false && disable[23].value == true , 'notselected' : seatLayout[23].reserved == true && seatLayout[23].passengerGender!='Female','female' : seatLayout[23].reserved == true && seatLayout[23].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[23].value == false && seatLayout[23].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[23].reserved,result.length,maxSeats,seatLayout[23])"
+                                                       for="asiento24">{{seatLayout[23].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[24].reserved"
+                                                       ng-disabled="seatLayout[24].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento25" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[24].reserved == false && disable[24].value == true , 'notselected' : seatLayout[24].reserved == true && seatLayout[24].passengerGender!='Female','female' : seatLayout[24].reserved == true && seatLayout[24].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[24].value == false && seatLayout[24].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[24].reserved,result.length,maxSeats,seatLayout[24])"
+                                                       for="asiento25">{{seatLayout[24].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[25].reserved"
+                                                       ng-disabled="seatLayout[25].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento26" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[25].reserved == false && disable[25].value == true , 'notselected' : seatLayout[25].reserved == true && seatLayout[25].passengerGender!='Female','female' : seatLayout[25].reserved == true && seatLayout[25].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[25].value == false && seatLayout[25].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[25].reserved,result.length,maxSeats,seatLayout[25])"
+                                                       for="asiento26">{{seatLayout[25].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[26].reserved"
+                                                       ng-disabled="seatLayout[26].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento27" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[26].reserved == false && disable[26].value == true , 'notselected' : seatLayout[26].reserved == true && seatLayout[26].passengerGender!='Female','female' : seatLayout[26].reserved == true && seatLayout[26].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[26].value == false && seatLayout[26].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[26].reserved,result.length,maxSeats,seatLayout[26])"
+                                                       for="asiento27">{{seatLayout[26].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[27].reserved"
+                                                       ng-disabled="seatLayout[27].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento28" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[27].reserved == false && disable[27].value == true , 'notselected' : seatLayout[27].reserved == true && seatLayout[27].passengerGender!='Female','female' : seatLayout[27].reserved == true && seatLayout[27].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[27].value == false && seatLayout[27].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[27].reserved,result.length,maxSeats,seatLayout[27])"
+                                                       for="asiento28">{{seatLayout[27].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[28].reserved"
+                                                       ng-disabled="seatLayout[28].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento29" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[28].reserved == false && disable[28].value == true , 'notselected' : seatLayout[28].reserved == true && seatLayout[28].passengerGender!='Female','female' : seatLayout[28].reserved == true && seatLayout[28].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[28].value == false && seatLayout[28].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[28].reserved,result.length,maxSeats,seatLayout[28])"
+                                                       for="asiento29">{{seatLayout[28].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[29].reserved"
+                                                       ng-disabled="seatLayout[29].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento30" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[29].reserved == false && disable[29].value == true , 'notselected' : seatLayout[29].reserved == true && seatLayout[29].passengerGender!='Female','female' : seatLayout[29].reserved == true && seatLayout[29].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[29].value == false && seatLayout[29].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[29].reserved,result.length,maxSeats,seatLayout[29])"
+                                                       for="asiento30">{{seatLayout[29].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[30].reserved"
+                                                       ng-disabled="seatLayout[30].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento31" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[30].reserved == false && disable[30].value == true , 'notselected' : seatLayout[30].reserved == true && seatLayout[30].passengerGender!='Female','female' : seatLayout[30].reserved == true && seatLayout[30].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[30].value == false && seatLayout[30].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[30].reserved,result.length,maxSeats,seatLayout[30])"
+                                                       for="asiento31">{{seatLayout[30].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[31].reserved"
+                                                       ng-disabled="seatLayout[31].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento32" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[31].reserved == false && disable[31].value == true , 'notselected' : seatLayout[31].reserved == true && seatLayout[31].passengerGender!='Female','female' : seatLayout[31].reserved == true && seatLayout[31].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[31].value == false && seatLayout[31].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[31].reserved,result.length,maxSeats,seatLayout[31])"
+                                                       for="asiento32">{{seatLayout[31].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="fila">
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[32].reserved"
+                                                       ng-disabled="seatLayout[32].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento33" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[32].reserved == false && disable[32].value == true , 'notselected' : seatLayout[32].reserved == true && seatLayout[32].passengerGender!='Female','female' : seatLayout[32].reserved == true && seatLayout[32].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[32].value == false && seatLayout[32].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[32].reserved,result.length,maxSeats,seatLayout[32])"
+                                                       for="asiento33">{{seatLayout[32].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[33].reserved"
+                                                       ng-disabled="seatLayout[33].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento34" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[33].reserved == false && disable[33].value == true , 'notselected' : seatLayout[33].reserved == true && seatLayout[33].passengerGender!='Female','female' : seatLayout[33].reserved == true && seatLayout[33].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[33].value == false && seatLayout[33].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[33].reserved,result.length,maxSeats,seatLayout[33])"
+                                                       for="asiento34">{{seatLayout[33].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="seccion">
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[34].reserved"
+                                                       ng-disabled="seatLayout[34].reserved || result.length == parseInt(maxSeats) "
+                                                       type="checkbox" value="None"
+                                                       id="asiento35" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[34].reserved == false && disable[34].value == true , 'notselected' : seatLayout[34].reserved == true && seatLayout[34].passengerGender!='Female','female' : seatLayout[34].reserved == true && seatLayout[34].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[34].value == false && seatLayout[34].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[34].reserved,result.length,maxSeats,seatLayout[34])"
+                                                       for="asiento35">{{seatLayout[34].seatNumber}}</label>
+                                            </div>
+                                            <div class="asiento">
+                                                <input ng-checked="seatLayout[35].reserved"
+                                                       ng-disabled="seatLayout[35].reserved || result.length == parseInt(maxSeats)"
+                                                       type="checkbox" value="None"
+                                                       id="asiento36" name="check"/>
+                                                <label ng-class="{'selected' : seatLayout[35].reserved == false && disable[35].value == true , 'notselected' : seatLayout[35].reserved == true && seatLayout[35].passengerGender!='Female','female' : seatLayout[35].reserved == true && seatLayout[35].passengerGender == 'Female', 'disabled-class' : result.length == intChange && disable[35].value == false && seatLayout[35].reserved == false }"
+                                                       ng-click="checkDisabled(seatLayout[35].reserved,result.length,maxSeats,seatLayout[35])"
+                                                       for="asiento36">{{seatLayout[35].seatNumber}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="legend">
+                                <div class="box">
+                                    <div class="red"></div>
+                                    <p>Already Booked Seats</p>
+                                </div>
+                                <div class="box">
+                                    <div class="Pink"></div>
+                                    <p>Ladies</p>
+                                </div>
+                                <div class="box">
+                                    <div class="Green"></div>
+                                    <p>Selected Seats</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel panel-default ticket-panel ticket-details contact-details">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Contact Details</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="contactEmail">E-Mail</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="email" placeholder="Enter your E-Mail" ng-model="contactEmail"
+                                               name="contactEmail" ng-required='true'
+                                               required ng-pattern="EMAIL_REGEXP" id="primary_email">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.contactEmail.$touched && passengerDetails.contactEmail.$invalid">Enter email address</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="contactNumber">Phone Number</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" placeholder="Enter your Phone Number"
+                                               ng-model="contactNumber" name="contactNumber" ng-required="true" required
+                                               ng-pattern="PHONE_REGEXP" id="primary_mobile">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.contactNumber.$touched && passengerDetails.contactNumber.$invalid ">Enter Phone Number</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-heading animate-if" ng-if="seatSelected.length>0 && seatSelected.length<=6 ">
+                            <h3 class="panel-title">Details of 1st Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>0 && seatSelected.length<=6 ">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name1">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" id="name1" ng-model="$parent.passengerOneName"
+                                               name="passengerOneName" ng-required="true" required>
+                                        <span  style="color: red"
+                                              ng-show="passengerDetails.passengerOneName.$touched && passengerDetails.passengerOneName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender1">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender1" name="passengerOneGender"
+                                                        ng-model="$parent.passengerOneGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerOneGender.$touched && passengerDetails.passengerOneGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age1">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age1" name="passengerOneAge"
+                                               ng-model="$parent.passengerOneAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerOneAge.$touched && passengerDetails.passengerOneAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-heading" ng-if="seatSelected.length>1 && seatSelected.length<=6">
+                            <h3 class="panel-title">Details of 2nd Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>1 && seatSelected.length<=6">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name2">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" ng-model="$parent.passengerTwoName" name="passengerTwoName"
+                                               id="name2" ng-required="true" true>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerTwoName.$touched && passengerDetails.passengerTwoName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender2">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender2" name="passengerTwoGender"
+                                                        ng-model="$parent.passengerTwoGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerTwoGender.$touched && passengerDetails.passengerTwoGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age2">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age2" name="passengerTwoAge"
+                                               ng-model="$parent.passengerTwoAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerTwoAge.$touched && passengerDetails.passengerTwoAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="panel-heading" ng-if="seatSelected.length>2 && seatSelected.length<=6">
+                            <h3 class="panel-title">Details of 3rd Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>2 && seatSelected.length<=6">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name3">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" ng-model="$parent.passengerThreeName"
+                                               name="passengerThreeName" id="name3" ng-required="true" true>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerThreeName.$touched && passengerDetails.passengerThreeName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender3">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender3" name="passengerThreeGender"
+                                                        ng-model="$parent.passengerThreeGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerThreeGender.$touched && passengerDetails.passengerThreeGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age3">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age3" name="passengerThreeAge"
+                                               ng-model="$parent.passengerThreeAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerThreeAge.$touched && passengerDetails.passengerThreeAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-heading" ng-if="seatSelected.length>3 && seatSelected.length<=6">
+                            <h3 class="panel-title">Details of 4th Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>3 && seatSelected.length<=6">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name4">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" ng-model="$parent.passengerFourName" name="passengerFourName"
+                                               id="name4" ng-required="true" true>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFourName.$touched && passengerDetails.passengerFourName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender4">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender4" name="passengerFourGender"
+                                                        ng-model="$parent.passengerFourGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFourGender.$touched && passengerDetails.passengerFourGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age4">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age4" name="passengerFourAge"
+                                               ng-model="$parent.passengerFourAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFourAge.$touched && passengerDetails.passengerFourAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-heading" ng-if="seatSelected.length>4 && seatSelected.length<=6">
+                            <h3 class="panel-title">Details of 5th Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>4 && seatSelected.length<=6">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name5">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" ng-model="$parent.passengerFiveName" name="passengerFiveName"
+                                               id="name5" ng-required="true" true>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFiveName.$touched && passengerDetails.passengerFiveName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender5">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender5" name="passengerFiveGender"
+                                                        ng-model="$parent.passengerFiveGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFiveGender.$touched && passengerDetails.passengerFiveGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age5">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age5" name="passengerFiveAge"
+                                               ng-model="$parent.passengerFiveAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerFiveAge.$touched && passengerDetails.passengerFiveAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-heading" ng-if="seatSelected.length>5 && seatSelected.length<=6">
+                            <h3 class="panel-title">Details of 6th Passenger</h3>
+                        </div>
+                        <div class="panel-body" ng-if="seatSelected.length>5 && seatSelected.length<=6">
+                            <div class="passenger-detail">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="name6">Name:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="text" ng-model="$parent.passengerSixName" name="passengerSixName"
+                                               id="name6" ng-required="true" true>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerSixName.$touched && passengerDetails.passengerSixName.$invalid"> Enter Passenger's Name</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="gender6">Gender:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <md-radio-group id="gender6" name="passengerSixGender"
+                                                        ng-model="$parent.passengerSixGender" ng-required="true"
+                                                        layout="row">
+
+                                            <md-radio-button value="Male">Male</md-radio-button>
+                                            <md-radio-button value="Female"> Female</md-radio-button>
+
+                                        </md-radio-group>
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerSixGender.$touched && passengerDetails.passengerSixGender.$invalid">Select Gender</span>
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-6">
+                                        <label for="age6">Age:</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-6">
+                                        <input type="number" id="age6" name="passengerSixAge"
+                                               ng-model="$parent.passengerSixAge" ng-required="true">
+                                        <span style="color: red"
+                                              ng-show="passengerDetails.passengerSixAge.$touched && passengerDetails.passengerSixAge.$invalid">Enter Age</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-4">
+                    <div class="panel panel-default ticket-panel ticket-details">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Your Ticket Details</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="detail-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Price of a ticket:</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><b>&#x20b9;{{ticketPrice}}</b></p>
+                                    </div>
+                                </div>
+                                <!--<div class="row">-->
+                                <!--<div class="col-md-6">-->
+                                <!--<p>Bus Timings:</p>-->
+                                <!--</div>-->
+                                <!--<div class="col-md-6">-->
+                                <!--<p><b>{{busTiming}}</b></p>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Selected Tickets:</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><b>{{result.length}}</b></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Selected Seat are:</p>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <p><b ng-if="seatSelected.length == 0">None</b><b
+                                                    ng-repeat="x in seatSelected | orderBy: seatSelected">{{x}} {{$last
+                                                ? '' : ($index==seatSelected.length-2) ? ' and ' : ', '}}
+                                            </b></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Total fare is: </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><b>&#x20b9; {{result.length * ticketPrice}}</b></p>
+                                    <input type="hidden" id="total_cost" value="{{result.length * ticketPrice}}">
+                                    <input type="hidden" id="quantity" value="{{result.length}}">
+                                    <input type="hidden" id="cost" value="{{ticketPrice}}">
+                                    <input type="hidden" id="dateOfJourney" value="{{journeyDate}}">
+                                    <input type="hidden" id="totalSeats" value="{{result}}">
+                                    <input type="hidden" id="pnr" ng-model="pnr" value="{{pnr}}">
+
+
+                                </div>
+                            </div>
+                            <button id="continue-payment" class="book-button" ng-click="payment()" ng-disabled="passengerDetails.$invalid">
+                                Continue to payment &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <script>
+
+//                $('#continue-payment').on('click',function(){
+//                    $('#continue-payment').attr("disabled", true);
+//                    var data = {
+//                        name:$("#name1").val(),
+//                        email: $("#primary_email").val(),
+//                        mobile: $("#primary_mobile").val(),
+//                        totalCost: $("#total_cost").val(),
+//                        quantity:$("#quantity").val(),
+//                        cost:$("#cost").val(),
+//                        destinationTo:$("#destinationTo").val(),
+//                        sourceFrom:$("#sourceFrom").val(),
+//                        dateOfJourney:$("#dateOfJourney").val(),
+//                        totalSeats:$("#totalSeats").val(),
+//                        pnr:$('#pnr').val()
+//                    };
+//
+//                    $.ajax({
+//                        type:'POST',
+//                        url:'/getpaymentdetails',
+//                        data:data,
+//                        success:function(response){
+//                           document.getElementById('longurl').value = response.longurl;
+//
+//
+//                        },
+//                        error: function(){
+//                            alert('Error occured while adding new buses! Try again later');
+//                        }
+//                    })
+//                });
+
+
+
+            </script>
+            <div class="row final-book">
+                <div class="col-md-6 col-sm-12">
+                    <h3>Boarding Points &amp; Timings</h3>
+                    <table class="table">
+                        <tr ng-repeat="board in boardingPoint">
+                            <td>{{board}}</td>
+                            <td>{{boardingTimings[$index]}}</td>
+
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <h3>Drop Points &amp; Timings</h3>
+                    <table class="table">
+                        <tr ng-repeat="drop in dropPoint">
+                            <td>{{drop}}</td>
+                            <td>{{dropTimings[$index]}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<form ng-submit="confirmBooking()">
+    <div class="container final-book" id="load-sections" ng-show="paymentInfo && seatHide">
+
+        <div id="mydiv" ng-show="loaderShow">
+            <img src="/images/ajax-loader.gif" class="ajax-loader"/>
+        </div>
+
+
+    <h2>Confirm Details</h2>
+    <div class="card booking-card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <p>{{sourceFrom}} - {{destinationTo}}</p>
+                    <input type="hidden" value="{{sourceFrom}}" id="sourceFrom">
+                    <input type="hidden" value="{{destinationTo}}" id="destinationTo">
+
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <p>2 + 2 Seater Non A.C</p>
+                </div>
+                <!--<div class="col-md-3 col-sm-6">-->
+                <!--<p>Departure: <b>09:00 AM</b></p>-->
+                <!--<p>Arrival: <b>09:00 AM</b></p>-->
+                <!--</div>-->
+                <div class="col-md-3 col-sm-6">
+                    <p>Total Fare: <b>&#x20b9; {{result.length * ticketPrice}}</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="confirmTable" style="padding: 60px">
+        <thead>
+        <tr >
+            <th scope="col">#</th>
+            <th scope="col">NAME</th>
+            <th scope="col">AGE</th>
+            <th scope="col">GENDER</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="name in result">
+            <td data-label="{{$index}}">{{$index+1}}</td>
+            <td data-label="{{name}}">{{nameList[$index]}}</td>
+            <td data-label="{{ageList[$index]}}">{{ageList[$index]}}</td>
+            <td data-label="{{genderList[$index]}}">{{genderList[$index]}}</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+        <ul class="mt30">
+            <li>You are leaving this site to enter payment gateway.</li>
+            <li>Session will expire within 5 minutes.</li>
+            <li>Complete your payment within 5 minutes or else seat selection will become invalid.</li>
+        </ul>
+    <div class="container final-book" ng-show="paymentInfo && seatHide">
+        <input type="hidden" value="" id="longurl">
+        <button>Confirm & Pay</button>
+
+    </div>
+        </div>
+
+</form>
+
+
+
+
+
+
+
+
+
+<script>
+
+
+   function paymentRedirect(){
+        window.location = document.getElementById('longurl').value;
+    }
+</script>
+
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>

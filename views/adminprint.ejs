@@ -1,0 +1,115 @@
+
+<title>Admin Print | Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+<link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css"/>
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jszip.min.js"></script>
+
+<script>
+
+    jQuery(function ($) {
+        $("#exportBt").click(function () {
+// parse the HTML table element having an id=exportTable
+            var dataSource = new shield.DataSource.create({
+                data: "#admin-table",
+                schema: {
+                    type: "table",
+                    fields: {
+                        sno: {type: Number},
+                        Name: {type: String},
+                        Age: {type: Number},
+                        Gender: {type: String},
+                        Contact_Number: {type: Number},
+                        Boarding_Point: {type: String},
+                        Drop_Point:{type: String},
+                        Seat_Number:{type: String}
+                    }
+                }
+            });
+
+// when parsing is done, export the data to PDF
+            dataSource.read().then(function (data) {
+                var pdf = new shield.exp.PDFDocument({
+                    author: "PrepBootstrap",
+                    created: new Date()
+                });
+
+                pdf.addPage("a3", "potrait");
+                pdf.table(
+                        120,
+                        130,
+                        data,
+                        [   {field: "sno", title: "#", width: 20},
+                            {field: "Name", title: "Name", width: 130},
+                            {field: "Age", title: "Age", width: 30},
+                            {field: "Gender", title: "Gender", width: 50},
+                            {field: "Contact_Number", title: "Contact No", width: 90},
+                            {field: "Boarding_Point", title: "Boarding Point", width: 130},
+                            {field: "Drop_Point", title: "Drop Point", width: 130},
+                            {field: "Seat_Number", title: "Seat No", width: 50}
+                        ],
+                        {
+                            margins: {
+                                top: 10,
+                                left: 10
+                            }
+                        }
+                );
+
+                pdf.saveAs({
+                    fileName: document.getElementById("fileDate").innerHTML
+                });
+            });
+        });
+    });
+</script>
+
+
+<div class="container admin-table" id="testdiv">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <input type="button" id="exportBt" class="admin-results-button"
+                                                  value="Print Results"">
+            <strong style="visibility: hidden" id="fileDate"><%= response[0].dateOfJourney %></strong>
+            <table class="table" id="admin-table">
+                <thead>
+                <tr>
+                    <th>sno</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Contact_Number</th>
+                    <th>Boarding_Point</th>
+                    <th>Drop_Point</th>
+                    <th>Seat_Number</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% for(var i = 0; i < response.length; i++) { %>
+                <tr>
+                    <td><%= i + 1 %></td>
+                    <td><%= response[i].ticket[0].passengerName %></td>
+                    <td><%= response[i].ticket[0].passengerAge %></td>
+                    <td><%= response[i].ticket[0].passengerGender %></td>
+                    <td><%= response[i].ticket[0].passengerContact %></td>
+                    <td><%= response[i].ticket[0].passengerBoarding %></td>
+                    <td><%= response[i].ticket[0].passengerDrop %></td>
+                    <td><%= response[i].ticket[0].seatNumber %></td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>
+
+

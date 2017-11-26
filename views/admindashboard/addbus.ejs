@@ -1,0 +1,56 @@
+<title>Add Bus  - Admin Dashboard  - Lakshana Travels</title>
+
+<% include ../partials/head.ejs %>
+<script src="/js/adminControl.js"></script>
+<% include ../partials/loader.ejs %>
+<% include ../partials/header.ejs %>
+
+
+<div class="container main-hero admin-login" ng-show="showDetails && !paymentInfo">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="hero-card">
+
+                <div class="form-group">
+                    <h3>Add Bus</h3>
+
+                    <hr>
+                    <div class="form-group">
+                        <label for="addSource">From</label>
+                        <select id="addSource" name="addSource">
+                            <option value="Elumalai">Elumalai</option>
+                            <option value="koyambedu">koyambedu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDestination">to</label>
+                        <select id="addDestination" name="addDestination">
+                            <option value="Elumalai">Elumalai</option>
+                            <option value="koyambedu">koyambedu</option>
+                        </select>
+                    </div>
+                    <label for="addDate">Date of Journey(dd/mm/yyyy)</label>
+                    <input  type="date" name="addDate" required="true" id="addDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="addPrice">Price</label>
+                    <input type="number" name="addPrice" required="true" id="addPrice">
+                </div>
+
+                <button class="book-button" id="add-bus">Add Bus</button>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <% include ../partials/footer.ejs %>
+</footer>
+
+<% include ../partials/footer-contents.ejs %>

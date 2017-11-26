@@ -1,0 +1,427 @@
+<% include ../partials/head.ejs %>
+
+<% include ../partials/loader.ejs %>
+<% include ../partials/header.ejs %>
+<script src="http://code.gijgo.com/1.6.0/js/gijgo.js" type="text/javascript"></script>
+<link href="http://code.gijgo.com/1.6.0/css/gijgo.css" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css" />
+<title>Agent Seat Block- Lakshana Travels</title>
+
+
+
+<div class="container main-hero admin-login" ng-show="showDetails && !paymentInfo">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="hero-card">
+                <h3>Seat Block</h3>
+                <hr>
+                <div class="form-group">
+                    <label for="from">From</label>
+                    <select id="from" class="form-control">
+                        <option value="Koyambedu">Koyambedu</option>
+                        <option value="Elumalai">Elumalai</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="to">To</label>
+                    <select id="to" class="form-control">
+                        <option value="Elumalai">Elumalai</option>
+                        <option value="Koyambedu">Koyambedu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+
+                    <label class="col-xs-3 control-label">Date</label>
+
+                    <div class="col-md-12 date">
+                        <input id="date" />
+                    </div>
+                </div>
+
+                <button  class="book-button" id="seat-block">Search</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container main-hero admin-login">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default ticket-panel ticket-details">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Select your seat</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="containerbus">
+                        <div class="autobus">
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento" style="border:0px">
+                                        <img src="/images/driver.svg" alt="">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="1" id="asiento1" name="check1"/>
+                                        <label class="disabled-class" id="label1" for="asiento1">1</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input ng-checked="seatLayout[1].reserved"
+                                               ng-disabled="seatLayout[1].reserved || result.length == parseInt(maxSeats) "
+                                               type="checkbox" value="2" id="asiento2" name="check2"/>
+                                        <label class="disabled-class" id="label2" for="asiento2">2</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="3" id="asiento3" name="check3"/>
+                                        <label class="disabled-class" id="label3" for="asiento3">3</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento4" name="check4"/>
+                                        <label class="disabled-class" id="label4" for="asiento4">4</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento5" name="check5"/>
+                                        <label class="disabled-class" id="label5" for="asiento5">5</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento6" name="check6"/>
+                                        <label class="disabled-class" id="label6" for="asiento6">6</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento7" name="check7"/>
+                                        <label class="disabled-class" id="label7" for="asiento7">7</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento8" name="check8"/>
+                                        <label class="disabled-class" id="label8" for="asiento8">8</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento9" name="check9"/>
+                                        <label class="disabled-class" id="label9" for="asiento9">9</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento10" name="check10"/>
+                                        <label class="disabled-class" id="label10" for="asiento10">10</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento11" name="check11"/>
+                                        <label class="disabled-class" id="label11" for="asiento11">11</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento12" name="check12"/>
+                                        <label class="disabled-class" id="label12" for="asiento12">12</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento13" name="check13"/>
+                                        <label class="disabled-class" id="label13" for="asiento13">13</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento14" name="check14"/>
+                                        <label class="disabled-class" id="label14" for="asiento14">14</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento15" name="check15"/>
+                                        <label class="disabled-class" id="label15" for="asiento15">15</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento16" name="check16"/>
+                                        <label class="disabled-class" id="label16" for="asiento16">16</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento17" name="check17"/>
+                                        <label class="disabled-class" id="label17" for="asiento17">17</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento18" name="check18"/>
+                                        <label class="disabled-class" id="label18" for="asiento18">18</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento19" name="check19"/>
+                                        <label class="disabled-class" id="label19" for="asiento19">19</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento20" name="check20"/>
+                                        <label class="disabled-class" id="label20" for="asiento20">20</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento21" name="check21"/>
+                                        <label class="disabled-class" id="label21" for="asiento21">21</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento22" name="check22"/>
+                                        <label class="disabled-class" id="label22" for="asiento22">22</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento23" name="check23"/>
+                                        <label class="disabled-class" id="label23" for="asiento23">23</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento24" name="check24"/>
+                                        <label class="disabled-class" id="label24" for="asiento24">24</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento25" name="check25"/>
+                                        <label class="disabled-class" id="label25" for="asiento25">25</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento26" name="check26"/>
+                                        <label class="disabled-class" id="label26" for="asiento26">26</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento27" name="check27"/>
+                                        <label class="disabled-class" id="label27" for="asiento27">27</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento28" name="check28"/>
+                                        <label class="disabled-class" id="label28" for="asiento28">28</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento29" name="check29"/>
+                                        <label class="disabled-class" id="label29" for="asiento29">29</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento30" name="check30"/>
+                                        <label class="disabled-class" id="label30" for="asiento30">30</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento31" name="check31"/>
+                                        <label class="disabled-class" id="label31" for="asiento31">31</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento32" name="check32"/>
+                                        <label class="disabled-class" id="label32" for="asiento32">32</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fila">
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento33" name="check33"/>
+                                        <label class="disabled-class" id="label33" for="asiento33">33</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento34" name="check34"/>
+                                        <label class="disabled-class" id="label34" for="asiento34">34</label>
+                                    </div>
+                                </div>
+                                <div class="seccion">
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento35" name="check35"/>
+                                        <label class="disabled-class" id="label35" for="asiento35">35</label>
+                                    </div>
+                                    <div class="asiento">
+                                        <input type="checkbox" value="None" id="asiento36" name="check36"/>
+                                        <label class="disabled-class" id="label36" for="asiento36">36</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="id" value="<%=user._id%>">
+                            <input type="hidden" id="name" value="<%=user.name%>">
+                            <input type="hidden" id="username" value="<%=user.username%>">
+                            <input type="hidden" id="mobile" value="<%=user.mobile%>">
+
+
+
+                            <button class="book-button" style="margin-top: 15px !important;" id="seat-block-final" disabled>Block the seats</button>
+                        </div>
+                    </div>
+                </div>
+            </div> <div class="col-md-12">
+                <div class="asiento">
+                    <label class="admin-selected"></label>
+                </div><h5 style="position: absolute; top: 9px;">Booked Seats</h5>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<footer>
+    <% include ../partials/footer.ejs %>
+</footer>
+
+<script>
+    $('#date').datepicker();
+
+
+
+</script>
+
+<script>
+    $(function(){
+        var $from = $('#from');
+        var $to = $('#to');
+        var $date = $('#date');
+        var $username = $('#username');
+        var $mobile = $('#mobile');
+        var $id = $('#id');
+        var $name = $('#name');
+
+
+        $('#seat-block').on('click',function(){
+            var data = {
+                from : $from.val(),
+                to : $to.val(),
+                date : $date.val()
+            };
+
+
+
+            $.ajax({
+                type:'POST',
+                url:'/blocksearch',
+                data:data,
+                success:function(response){
+                    $('#seat-block-final').prop('disabled', false)
+                    if(response.length<36){
+                        alert('no bus found');
+                        location.reload();
+
+                    }else{
+                        response.sort(function(a, b) {
+                            return parseInt(a.ticket[0].seatNumber) - parseInt(b.ticket[0].seatNumber);
+                        });
+
+                        for(i=1;i<=response.length;i++){
+                            var labelid = "#label"+i;
+
+
+                            if(response[i-1].ticket[0].reserved == false){
+                                $(labelid ).removeClass("disabled-class");
+                                $(labelid ).addClass("selected");
+                            }
+
+
+
+
+                            if(response[i-1].ticket[0].reserved == true){
+                                $(labelid ).removeClass("disabled-class");
+                                $(labelid ).addClass("admin-selected");
+                            }
+                        }
+
+
+                    }
+                },
+                error: function(){
+                    alert('Error occurred while searching buses !');
+                    location.reload();
+                }
+            });
+
+
+            var selectedSeats = [];
+
+        });
+
+
+        $('#seat-block-final').on('click',function(){
+            var blockedSeats = [];
+            for(i=1;i<=36;i++){
+                var checkbox = "#asiento"+i;
+                if($(checkbox).prop('checked')){
+                    blockedSeats.push(i);
+                }
+
+                if(i == 36){
+                    console.log(blockedSeats);
+                    var data = {
+                        blockedSeats:blockedSeats,
+                        from : $from.val(),
+                        to : $to.val(),
+                        date : $date.val(),
+                        username : $username.val(),
+                        mobile : $mobile.val(),
+                        id : $id.val(),
+                        name : $name.val()
+
+                    }
+                    $.ajax({
+                        type:'POST',
+                        url:'/agentblock',
+                        data:data,
+                        success:function(){
+                            alert('seat successfully blocked');
+                            location.reload();
+
+                        },
+                        error: function(){
+                            alert('error occured while blocking tickets !');
+                            location.reload();
+                        }
+
+
+
+                    });
+                }
+
+
+            }
+
+        });
+    });
+</script>
+
+<% include ../partials/footer-contents.ejs %>
+
+

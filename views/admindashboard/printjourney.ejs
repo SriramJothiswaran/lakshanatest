@@ -1,0 +1,53 @@
+<title>Print Journey  - Admin Dashboard  - Lakshana Travels</title>
+<% include ../partials/head.ejs %>
+<script src="/js/adminControl.js"></script>
+<% include ../partials/loader.ejs %>
+<% include ../partials/header.ejs %>
+
+
+
+<div class="container main-hero admin-login" ng-show="showDetails && !paymentInfo">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="hero-card">
+                <form action="/search" method="post">
+                    <div class="form-group">
+                        <h3>Print Journey Details</h3>
+                        <hr>
+                        <label for="from">From</label>
+                        <select id="from" name="from">
+                            <option value="Elumalai">Elumalai</option>
+                            <option value="Koyambedu">Koyambedu</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="to">To</label>
+                        <select id="to" name="to">
+                            <option value="Elumalai">Elumalai</option>
+                            <option value="Koyambedu">Koyambedu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date of Journey(dd/mm/yyyy)</label>
+                        <input type="date" name="date" required="true" id="date">
+                    </div>
+                    <button class="book-button" type="submit">Search</button>
+                </form>
+                <hr>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <% include ../partials/footer.ejs %>
+</footer>
+
+<% include ../partials/footer-contents.ejs %>

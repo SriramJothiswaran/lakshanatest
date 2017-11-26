@@ -1,0 +1,133 @@
+<title>Cancel Booked Tickets | Lakshana Travels</title>
+
+
+<% include partials/head.ejs %>
+
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+
+
+
+<div class="container coming-soon agent-reg">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h1>Cancel Ticket</h1>
+            <div>
+                <label for="pnr">PNR Number</label>
+                <input required type="text"  id="pnr" name="pnr" required>
+            </div>
+            <div>
+                <h6 style="color: red">Enter the email id which you provided while booking the tickets</h6>
+                <label for="email">E-mail</label>
+                <input required type="text" name="email" id="email"/>
+            </div>
+            <button class="book-button mt0" type="submit" id="ticket-cancel">Cancel Ticket</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $("#ticket-cancel").click(function(){
+        var $pnr = $('#pnr');
+        var $email = $('#email');
+
+        var data = {
+            pnr : $pnr.val(),
+            email : $email.val()
+        };
+        $.ajax({
+            type:'POST',
+            url:'/cancelsearch',
+            data:data,
+            success:function(response){
+                console.log(response);
+               if(response == 'before'){
+                   swal({
+                       title: "Are you sure?",
+                       text: "On cancellation, only 60% of the ticket fare will be refunded",
+                       icon: "warning",
+                       buttons: true,
+                       dangerMode: true,
+                   }).then((willDelete) => {
+                       if (willDelete) {
+                       $.ajax({
+                           type:'POST',
+                           url:'/cancelticket',
+                           data:data,
+                           success:function(res){
+                               if(res){
+                                   swal({text:"Your ticket(s) has been cancelled and your refund money will be credited to your bank account within 5 to 7 business days.",icon: "success"}).then((willDelete) => {
+                                       if (willDelete){
+                                       window.location.href='/';
+                                   }
+                               });
+                               }
+
+                           },
+                           error: function(){
+                               alert('Error occurred while adding new buses! Try again later');
+                           }
+                       });
+                   } else {
+
+                   }
+               });
+               }
+            if(response == 'same day'){
+                swal({
+                    title: "Are you sure?",
+                    text: "On cancellation, no amount will be refunded",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                    $.ajax({
+                                type:'POST',
+                                url:'/cancelticket',
+                                data:data,
+                                success:function(res){
+                                    if(res){
+                                        swal({text:"Your ticket(s) has been cancelled.",icon: "success"}).then((willDelete) => {
+                                            if (willDelete){
+                                            window.location.href='/';
+                                        }
+                                    });
+                                }
+
+                            },
+                            error: function(){
+                        alert('Error occurred while adding new buses! Try again later');
+                    }
+                });
+            } else {
+
+            }
+    });
+
+
+            }
+
+
+            if(response == false){
+                swal("Oops!", "Details you entered are invalid");
+            }
+
+            },
+            error: function(){
+
+            }
+        });
+    });
+</script>
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>

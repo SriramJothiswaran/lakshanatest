@@ -1,0 +1,38 @@
+<title>Agent Login | Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+<div class="container main-hero admin-login" ng-show="showDetails && !paymentInfo">
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="hero-card ">
+        <form action="/agentlogin" method="post">
+          <p class="login-error"><%= error%></p>
+          <p class="login-error"><%= error_msg%></p>
+          <p class="login-error"><%= success_msg%></p>
+          <h3 style="text-align: center">Agent Login</h3><hr>
+
+          <div class="form-group">
+            <label for="user">Username</label>
+            <input name="username" type="text">
+          </div>
+          <div class="form-group">
+            <label for="pass">Password</label>
+            <input name="password" type="password">
+          </div>
+          <button class="book-button" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>
+
+

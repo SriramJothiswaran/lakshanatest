@@ -1,0 +1,46 @@
+
+<title>Agent Registration | Lakshana Travels</title>
+
+<% include partials/head.ejs %>
+
+<% include partials/loader.ejs %>
+<% include partials/header.ejs %>
+
+<div class="container coming-soon agent-reg">
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <h1>Agent Registration</h1>
+      <form method="post" action="/agentregister">
+        <div class="field">
+          <label for="name">Name: *</label>
+          <input id="name" type="text" name="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email: *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password: *</label>
+          <input type="password" name="password" id="upass" required>
+        </div>
+        <div class="field">
+          <label for="mobile">Mobile Number: *</label>
+          <input id="mobile" name="mobile" type="number" required>
+        </div>
+        <div class="field">
+          <label for="address">Address: *</label>
+          <textarea id="address" name="address" required></textarea>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer>
+    <% include partials/footer.ejs %>
+</footer>
+
+<% include partials/footer-contents.ejs %>
+
+
